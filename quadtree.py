@@ -20,7 +20,7 @@ class NodoQuadtree:
             "SE": crear_hijo((mitad_x, self.max_x, self.min_y, mitad_y))
         }
 
-    def _insertar_en_hijo(self, punto):
+    def insertar_en_hijo(self, punto):
         x, y = punto
 
         mitad_x = (self.min_x + self.max_x) / 2
@@ -55,10 +55,10 @@ class NodoQuadtree:
 
             # Redistribuir los puntos anteriores
             for p in puntos_anteriores:
-                self._insertar_en_hijo(p)
+                self.insertar_en_hijo(p)
 
         # Insertar en la región correspondiente
-        return self._insertar_en_hijo(punto)
+        return self.insertar_en_hijo(punto)
 
     
     def intersecta_radio(self, centro, radio):
@@ -98,7 +98,7 @@ class NodoQuadtree:
         return encontrados
 
     
-    def distancia_minima2(self, centro):
+    def distancia_minima(self, centro):
         x, y = centro
 
         dx = max(self.min_x - x, 0, x - self.max_x)
@@ -110,7 +110,7 @@ class NodoQuadtree:
                            mejor_distancia2=float("inf")):
 
         # Descartar regiones que no pueden mejorar el resultado
-        if self.distancia_minima2(centro) > mejor_distancia2:
+        if self.distancia_minima(centro) > mejor_distancia2:
             return mejor_punto, mejor_distancia2
 
         # Si es una hoja, revisar sus puntos
@@ -129,7 +129,7 @@ class NodoQuadtree:
             # Revisar primero las regiones más cercanas
             hijos_ordenados = sorted(
                 self.hijos.values(),
-                key=lambda hijo: hijo.distancia_minima2(centro)
+                key=lambda hijo: hijo.distancia_minima(centro)
             )
 
             for hijo in hijos_ordenados:
